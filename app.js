@@ -17,6 +17,9 @@ function TicTacToa(){
     }
     function takeTurn(){
       
+        if(board.checkWinner()){
+            return;
+        }
         if(turn%2==0){
             human.takeTurn();
         }else{
@@ -28,7 +31,38 @@ function TicTacToa(){
 
 function Board(){
     this.position=Array.from(document.querySelectorAll('.col'));
+   
+   
+    this.checkWinner= function(){
+        let winner=false
+        const winneringCombinations =[
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,4,8],
+            [2,4,6],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8]
+        ]; 
+        const position= this.position;
+      
+        winneringCombinations.forEach(winnerC => {
+          const posInnerText1 =position[winnerC[0]].innerText;
+          const posInnerText2 =position[winnerC[1]].innerText;
+          const posInnerText3 =position[winnerC[2]].innerText;
+          const isWinning = posInnerText1 !== '' && posInnerText1 === posInnerText2 && posInnerText2 === posInnerText3;
+          if(isWinning){
+              winner=true;
+              winnerC.forEach((el) => {
+                position[el].className +=' winner';
+              })
+          }
+       
+        });
+        return winner;
 
+    }
 }
 function Human(board){
 
@@ -46,8 +80,8 @@ function Computer(board){
  
     this.takeTurn = function(){
         const availablePositions=board.position
-                                    .filter(p =>p.innerText==="");
-        const move = Math.floor(Math.random * availablePositions.length);
-        availablePositions[move].innerText='O';
+                                    .filter(p =>p.innerText==='');
+        const move = Math.floor(Math.random() * (availablePositions.length - 0));
+        availablePositions[move].innerText = 'O';
     }
 }
